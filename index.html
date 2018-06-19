@@ -1,0 +1,237 @@
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <style>
+    .container{
+        position:absolute !important;
+        left:50%;
+        top:50%;
+        transform: translate(-50%, -50%);
+    }
+    .circle {
+        width:300px;
+        height:300px;
+        border:2px solid black;
+        border-radius:100%;
+        float:left;
+        margin-right:40px;
+        background-color:red;
+    }
+    .circle.interior{
+        width:218px;
+        height:218px;
+        margin-left:41px;
+        background-color:white;
+    }
+    #slider {
+        position:relative;
+        height:40px;
+        width:40px;
+        background:white;
+        box-sizing: border-box;
+        border:2px solid black;
+        left:50%;
+        top:0;
+        border-radius:100%;
+        cursor:pointer;
+        box-shadow:4px 1px 3px darkred;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"]{
+        -moz-appearance: none;
+        border: 2px solid #e6e6e6;
+        border-radius: 4px;
+        color: #818181;
+        display: block;
+        font-size: 1em;
+        height: 30px;
+        padding:0 6px;
+        transition: border 0s ease 0s, width 0.4s ease-in-out 0s;
+    }
+    .year{
+        font-size:3.3em;
+        position: absolute;
+        top: 30px;
+        margin: 1.7em;
+    }
+    .edge{
+        color:grey;
+    }
+    #first {
+        left: -250px;
+    }
+    #current {
+        left: 15px;
+    }
+    #last {
+        left: 265px;
+    }
+    .range{
+        float:left;
+        width:30px;
+    }
+    .articulos{
+        width:200px;
+        height: 200px;
+        border: 1px solid black;
+    }
+    .article{
+        width:100%;
+        display:inline-block;
+        overflow:hidden;
+    // -webkit-transition: width 2s;
+    // -moz-transition: width 2s;
+    // -o-transition: width 2s;
+    // -ms-transition: width 2s;
+    // transition: width 2s;
+    }
+    .hide.article{
+    // border:0;
+    // padding:0;
+    // width:0;
+    // animation: fade 1s linear 2s infinite alternate;
+    }
+    .texto{
+        width:1000px;
+    }
+
+</style></head>
+<body>
+
+<div class = "articulos" >
+    <div id ='firstA' data-year="1800" style="display: inline-block;" class ="article" >
+        <p class ="texto" >Este es el primer articulo</p>
+    </div>
+    <div id ='secondA' style="display: none;" data-year="1825" class ="article hide" >
+        <p class="texto">Este es el segundo articulo</p>
+    </div>
+    <div id ='thirdA' style="display: none;" data-year="1850" class ="article hide" >
+        <p class ="texto" >Este es el tercero articulo</p>
+    </div>
+    <div id ='fourthA' style="display: none;" data-year="1875" class ="article hide" >
+        <p class="texto">Este es el cuarto articulo</p>
+    </div>
+    <div id ='fifthA' data-year="1900" style="display: none;" class ="article hide" >
+        <p class ="texto" >Este es el quinto articulo</p>
+    </div>
+    <div id ='sixthA' style="display: none;" data-year="1925" class ="article hide" >
+        <p class="texto">Este es el sexto articulo</p>
+    </div>
+    <div id ='seventhA' style="display: none;" data-year="1950" class ="article hide" >
+        <p class ="texto" >Este es el septimo articulo</p>
+    </div>
+    <div id ='eighthA' style="display: none;" data-year="1975" class ="article hide" >
+        <p class ="texto" >Este es el octavo articulo</p>
+    </div>
+    <div id ='ninthA' style="display: none;" data-year="2000" class ="article hide" >
+        <p class ="texto" >Este es el noveno articulo</p>
+    </div>
+    <div id ='tenthA' data-year="2018" style="display: none;" class ="article hide" >
+        <p class ="texto" >Este es el decimo articulo</p>
+    </div>
+</div>
+<div class='container'>
+    <div id='circle' class="circle">
+        <div id='slider'></div>
+        <div class="circle interior">
+        </div>
+    </div>
+    <!--<input id="test" type="text" value="" class="range" data-max="50" data-min="0" data-step="1" name="angle"> -->
+    <span class ="year edge" id  ="first">1800</span>
+    <span class ="year" id  ="current">1800</span>
+    <span class ="year edge" id  ="last">2018</span>
+</div>
+
+<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"> </script>-->
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript">
+    (function () {
+        var $slider = $('#slider');
+        var transition = false;
+        var radius = 130;
+        var deg = 0;
+        var pastDeg =[0,1];
+        var elP = $('#circle').offset();
+        var elPos = { x: elP.left, y: elP.top};
+        var X = 0, Y = 0;
+        var mdown = false;
+        var ratio = 0;
+        var articleIndex = 100;
+        var articleIndexLast = articleIndex;
+        var speed = 0.15;
+        var articleYears = [1800, 1825, 1850, 1875, 1900, 1925, 1950, 1975, 2000, 2018];
+        var maxIndexCA = articleYears.length;
+        var minIndexCA = 0;
+        var currentCA = 0;
+        var lastCA = currentCA;
+        // ACTIVACION DEL RATON
+        $('#circle')
+            .touchstart(function (e) { mdown = true; })
+            .touchend(function (e) { mdown = true;})
+            // SI EL RATON SE MUEVE
+            .touchmove(function (e) {
+                if (mdown && event.touches.length === 1) {
+                    var touch = event.touches[0];
+                    var mPos = {x: touch.clientX-elPos.x, y: touch.clientY-elPos.y};
+
+                    var atan = Math.atan2(mPos.x-radius, mPos.y-radius);
+                    deg = -atan/(Math.PI/180) + 180;
+                    if(deg !== pastDeg[1]){
+                        pastDeg[0] = pastDeg[1];
+                        pastDeg[1] = deg;
+                    }
+                    if(pastDeg[0]<pastDeg[1] ||
+                        (pastDeg[0]-pastDeg[1])>200){
+                        ratio = pastDeg[1] - pastDeg[0];
+                    }
+                    if((pastDeg[0]>pastDeg[1]||
+                        (pastDeg[0]-pastDeg[1])<(-200)) && !(pastDeg[0] -pastDeg[1] >200)){
+                        ratio = pastDeg[1] - pastDeg[0];
+                    }
+
+                    //console.log(pastDeg);
+                    if (ratio < -100 || ratio >100){
+                        ratio = 0;
+                    }
+                    articleIndex = articleIndex+ratio*speed;
+                    if(articleIndex >= articleIndexLast+25){
+                        currentCA = currentCA +1;
+                        articleIndexLast = articleIndex;
+                    }
+                    else if(articleIndex <= articleIndexLast-25){
+                        currentCA = currentCA -1;
+                        articleIndexLast = articleIndex;
+                    }
+                    if(currentCA <= minIndexCA){
+                        currentCA = 0;
+                    }
+                    if(currentCA >= maxIndexCA-1){
+                        currentCA = maxIndexCA-1;
+                    }
+                    if (lastCA !== currentCA){
+                        if(!transition){
+                            transition=true;
+                            $('*[data-year=' + articleYears[lastCA]+ ' ]').fadeOut(0,$('*[data-year=' + articleYears[currentCA]+ ' ]').fadeIn(300, transition=false))
+                        }
+                        lastCA = currentCA;}
+                    //console.log(articleIndex+' '+articleIndexLast);
+                    // final (0-360 positive) degrees from mouse position
+
+                    X = Math.round(radius* Math.sin(deg*Math.PI/180));
+                    Y = Math.round(radius*  -Math.cos(deg*Math.PI/180));
+                    $slider.css({ left: X+radius, top: Y+radius });
+                    // AND FINALLY apply exact degrees to ball rotation
+                    $slider.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});
+                    $slider.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});
+
+                    document.getElementById("current").innerHTML = Math.floor(articleYears[currentCA]);
+                }
+            });
+    })();
+</script>
+
+</body>
+
+</html>
