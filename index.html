@@ -93,16 +93,19 @@
 <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 <script type="text/javascript">
+        var elP = $('#circle').offset();
+        var elPos = { x: elP.left, y: elP.top};
+        var isRecalculatePos = false;
+
+    window.addEventListener("orientationchange", function() {
+       isRecalculatePos = true;
+});
     (function () {
         var $slider = $('#slider');
         var transition = false;
         var radius = 117;
         var deg = 0;
         var pastDeg =[0,1];
-
-        var elP = $('#circle').offset();
-        var elPos = { x: elP.left, y: elP.top};
-
         var X = 0, Y = 0;
         var mdown = false;
         var ratio = 0;
@@ -120,6 +123,11 @@
             .touchend(function (e) { mdown = true;})
             // SI EL RATON SE MUEVE
             .touchmove(function (e) {
+                if(isRecalculatePos){
+                    elP = $('#circle').offset();
+                    elPos = { x: elP.left, y: elP.top};
+                    isRecalculatePos = false;
+                }
                 if(typeof event == 'undefined'){
                     var event = e;
                     event.touches = e.originalEvent.changedTouches;
