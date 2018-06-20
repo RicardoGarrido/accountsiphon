@@ -120,6 +120,12 @@
             .touchend(function (e) { mdown = true;})
             // SI EL RATON SE MUEVE
             .touchmove(function (e) {
+                if(typeof event == 'undefined'){
+                    var event = e;
+                    event.touches = e.originalEvent.changedTouches;
+
+                }
+
                 if (mdown && event.touches.length === 1) {
                     var touch = event.touches[0];
                     var mPos = {x: touch.clientX-elPos.x, y: touch.clientY-elPos.y};
@@ -166,14 +172,12 @@
                         lastCA = currentCA;}
                     //console.log(articleIndex+' '+articleIndexLast);
                     // final (0-360 positive) degrees from mouse position
-
                     X = Math.round(radius* Math.sin(deg*Math.PI/180));
                     Y = Math.round(radius*  -Math.cos(deg*Math.PI/180));
                     $slider.css({ left: X+radius, top: Y+radius });
                     // AND FINALLY apply exact degrees to ball rotation
                     $slider.css({ WebkitTransform: 'rotate(' + deg + 'deg)'});
                     $slider.css({ '-moz-transform': 'rotate(' + deg + 'deg)'});
-
                     document.getElementById("current").innerHTML = Math.floor(articleYears[currentCA]);
                 }
             });
